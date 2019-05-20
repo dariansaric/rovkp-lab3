@@ -24,14 +24,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
-public class Main {
-    static final String PATH_TO_ITEMS = "./jester/jester_items.dat";
+public class CollectionIndexer {
+    private static final String PATH_TO_ITEMS = "./jester/jester_items.dat";
     private static final String ID_FIELD_NAME = "ID";
     private static final String TEXT_FIELD_NAME = "TEXT";
     private static final Path OUTPUT_PATH = Paths.get("./item_similarity.csv");
     private static final FieldType ID_FIELD_TYPE = createIDFieldType();
     private static final FieldType TEXT_FIELD_TYPE = createTextFieldType();
-    static Map<Integer, String> documentMap = new LinkedHashMap<>();
+    private static Map<Integer, String> documentMap = new LinkedHashMap<>();
 
     public static void main(String[] args) throws IOException, ParseException {
 
