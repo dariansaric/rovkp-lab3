@@ -1,0 +1,5 @@
+1. zadatak:
+Koliko se zapisa nalazi u izlaznoj datoteci? 36
+Koja šala je najsličnija šali s ID 100? 78 (naredba za provjeru:grep '100,' item_similarity.csv | sort -k3 -t',')
+Vidite li zašto su te dvije šale slične? Pitanje u šali je vrlo vrlo slično, dok odgovori sadrže nekoliko zajedničkih riječi
+Što mislite hoće li preporuka po sadržaju imati smisla u slučaju ovih šala? Mogla bi, zato što su šale sličnog tipa TODO: ima li?

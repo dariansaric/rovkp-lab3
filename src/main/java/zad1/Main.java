@@ -29,10 +29,9 @@ public class Main {
     private static final String ID_FIELD_NAME = "ID";
     private static final String TEXT_FIELD_NAME = "TEXT";
     private static final Path OUTPUT_PATH = Paths.get("./item_similarity.csv");
-    private static final String TITLE = "naslov";
     private static final FieldType ID_FIELD_TYPE = createIDFieldType();
     private static final FieldType TEXT_FIELD_TYPE = createTextFieldType();
-    static Map<Integer, String> documentMap = new HashMap<>();
+    static Map<Integer, String> documentMap = new LinkedHashMap<>();
 
     public static void main(String[] args) throws IOException, ParseException {
 
@@ -42,22 +41,31 @@ public class Main {
         StandardAnalyzer analyzer = new StandardAnalyzer();
         Directory index = new RAMDirectory();
         getDocuments(Paths.get(args.length == 1 ? args[0] : PATH_TO_ITEMS), index);
-        double[][] coMatrix = new double[documentMap.size()][documentMap.size()];
+        double[][] coMatrix = initMatrix();
+
         for (Map.Entry<Integer, String> e : documentMap.entrySet()) {
-            Query query = new QueryParser(TITLE, analyzer).parse(QueryParser.escape(e.getValue()));
+            Query query = new QueryParser(TEXT_FIELD_NAME, analyzer).parse(QueryParser.escape(e.getValue()));
             IndexReader reader = DirectoryReader.open(index);
             IndexSearcher searcher = new IndexSearcher(reader);
             TopDocs docs = searcher.search(query, documentMap.size());
             ScoreDoc[] hits = docs.scoreDocs;
-            for (int i = 0; i < documentMap.size(); i++) {
-                int docId = (int) reader.document(hits[i].doc).getField(ID_FIELD_NAME).numericValue();
-                coMatrix[e.getKey()][docId] = hits[i].score;
+            for (ScoreDoc d : hits) {
+                int docId = Integer.parseInt(reader.document(d.doc).getField(ID_FIELD_NAME).stringValue());
+                coMatrix[e.getKey() - 1][docId - 1] = d.score;
             }
         }
 
 
         Map<String, Double> sims = calculateSimilarity(coMatrix);
         writeSims(sims);
+    }
+
+    private static double[][] initMatrix() {
+        double[][] m = new double[documentMap.size()][documentMap.size()];
+        for (double[] doubles : m) {
+            Arrays.fill(doubles, 0.);
+        }
+        return m;
     }
 
     private static void writeSims(Map<String, Double> sims) throws IOException {
@@ -78,7 +86,7 @@ public class Main {
         normalizeMatrix(coMatrix);
         for (int i = 0; i < documentMap.size(); i++) {
             for (int j = i + 1; j < documentMap.size(); j++) {
-                coMap.put(i + "," + j, (coMatrix[i][j] + coMatrix[j][i]) / 2);
+                coMap.put((i + 1) + "," + (j + 1), (coMatrix[i][j] + coMatrix[j][i]) / 2);
             }
         }
 
@@ -98,7 +106,7 @@ public class Main {
         FieldType textFieldType = new FieldType();
         textFieldType.setStored(false);
         textFieldType.setTokenized(true);
-        textFieldType.setIndexOptions(IndexOptions.NONE);
+        textFieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
 
         return textFieldType;
     }
@@ -107,7 +115,7 @@ public class Main {
         FieldType idFieldType = new FieldType();
         idFieldType.setStored(true);
         idFieldType.setTokenized(false);
-        idFieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+        idFieldType.setIndexOptions(IndexOptions.NONE);
 
         return idFieldType;
     }
@@ -119,7 +127,7 @@ public class Main {
             if (l.isEmpty()) {
                 continue;
             }
-            if (l.matches("\\d:")) {
+            if (l.matches("\\d+:")) {
                 int id = Integer.parseInt(l.split(":")[0]);
                 StringBuilder joiner = new StringBuilder();
                 for (++i; !lines.get(i).isEmpty(); i++) {
