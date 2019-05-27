@@ -1,14 +1,19 @@
 package zad2;
 
 import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.eval.RecommenderBuilder;
+import org.apache.mahout.cf.taste.eval.RecommenderEvaluator;
 import org.apache.mahout.cf.taste.impl.common.LongPrimitiveIterator;
+import org.apache.mahout.cf.taste.impl.eval.RMSRecommenderEvaluator;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.similarity.file.FileItemSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.ItemBasedRecommender;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
+import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
+import org.apache.mahout.common.RandomUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -33,10 +38,10 @@ public class ItemBasedRecommend {
         ItemBasedRecommender recommender = new GenericItemBasedRecommender(model, similarity);
 
         LongPrimitiveIterator iterator = recommender.getDataModel().getUserIDs();
-        StringJoiner joiner = new StringJoiner("\n");
+        StringJoiner joiner = new StringJoiner("\n", "", "\n");
         for (int i = 0; i < 100 && iterator.hasNext(); i++) {
             long id = iterator.nextLong();
-            System.out.println(i + " - Preporuka za " + id);
+//            System.out.println(i + " - Preporuka za " + id);
             List<RecommendedItem> items = recommender.recommend(id, 10);
             StringJoiner joiner1 = new StringJoiner(",");
             items.forEach(it -> joiner1.add(Long.toString(it.getItemID())));
@@ -46,5 +51,23 @@ public class ItemBasedRecommend {
                 joiner.toString().getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING);
+
+        evaluateRecommender(model, similarity);
+    }
+
+    private static void evaluateRecommender(DataModel model, ItemSimilarity similarity) throws TasteException {
+        RandomUtils.useTestSeed();
+
+        RecommenderBuilder builder = new RecommenderBuilder() {
+            @Override
+            public Recommender buildRecommender(DataModel dataModel) throws TasteException {
+                return new GenericItemBasedRecommender(model, similarity);
+            }
+        };
+
+        RecommenderEvaluator evaluator = new RMSRecommenderEvaluator();
+
+        double score = evaluator.evaluate(builder, null, model, 0.5, 0.5);
+        System.out.println("Evaluacija: " + score);
     }
 }

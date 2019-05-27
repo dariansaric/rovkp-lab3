@@ -2,4 +2,13 @@
 Koliko se zapisa nalazi u izlaznoj datoteci? 36
 Koja šala je najsličnija šali s ID 100? 78 (naredba za provjeru:grep '100,' item_similarity.csv | sort -k3 -t',')
 Vidite li zašto su te dvije šale slične? Pitanje u šali je vrlo vrlo slično, dok odgovori sadrže nekoliko zajedničkih riječi
-Što mislite hoće li preporuka po sadržaju imati smisla u slučaju ovih šala? Mogla bi, zato što su šale sličnog tipa TODO: ima li?
+Što mislite hoće li preporuka po sadržaju imati smisla u slučaju ovih šala? Mogla bi, zato što su šale sličnog tipa
+
+2. zadatak
+Kojih 10 preporuka je za korisnika s ID-jem 22 je izračunao prvi, a koje drugi preporučitelj?
+ - prvi preporučitelj (baziran na sadržaju): 141,103,134,63,137,111,124,123,126,140
+ - drugi preporučitelj (baziran na suradnji): 148,129,138,132,119,144,143,127,59,58
+Koje preporučitelj ima bolju kvalitetu?
+Je  li  za  ove ulazne  podatke  bolje  koristiti  mjeru  log-likelihood ili Pearsonovu korelaciju u slučaju drugog preporučitelja?
+
+3. zadatak

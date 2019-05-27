@@ -94,8 +94,12 @@ public class CollectionIndexer {
     }
 
     private static void normalizeMatrix(double[][] coMatrix) {
+        double[] maxes = new double[documentMap.size()];
+        for (int i = 0; i < maxes.length; i++) {
+            maxes[i] = Collections.max(Arrays.asList(ArrayUtils.toObject(coMatrix[i])));
+        }
+        double max = Collections.max(Arrays.asList(ArrayUtils.toObject(maxes)));
         for (int i = 0; i < documentMap.size(); i++) {
-            double max = Collections.max(Arrays.asList(ArrayUtils.toObject(coMatrix[i])));
             for (int j = 0; j < documentMap.size(); j++) {
                 coMatrix[i][j] /= max;
             }

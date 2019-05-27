@@ -41,7 +41,7 @@ public class UserBasedRecommender {
 
         Recommender recommender = builder.buildRecommender(model);
         LongPrimitiveIterator iterator = recommender.getDataModel().getUserIDs();
-        StringJoiner joiner = new StringJoiner("\n");
+        StringJoiner joiner = new StringJoiner("\n", "", "\n");
         for (int i = 0; i < 100 && iterator.hasNext(); i++) {
             long id = iterator.nextLong();
             List<RecommendedItem> items = recommender.recommend(id, 10);
