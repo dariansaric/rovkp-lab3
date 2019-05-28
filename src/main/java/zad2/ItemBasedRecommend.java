@@ -67,7 +67,7 @@ public class ItemBasedRecommend {
 
         RecommenderEvaluator evaluator = new RMSRecommenderEvaluator();
 
-        double score = evaluator.evaluate(builder, null, model, 0.5, 0.5);
+        double score = evaluator.evaluate(builder, null, model, 0.3, 0.7);
         System.out.println("Evaluacija: " + score);
     }
 }

@@ -12,3 +12,8 @@ Koje preporučitelj ima bolju kvalitetu?
 Je  li  za  ove ulazne  podatke  bolje  koristiti  mjeru  log-likelihood ili Pearsonovu korelaciju u slučaju drugog preporučitelja?
 
 3. zadatak
+mahout recommenditembased
+    --usersFile /user/rovkp/jester_ratings_improved.dat
+    --output /user/rovkp/output --similarityClassname SIMILARITY_PEARSON_CORRELATION
+    --input /user/rovkp/jester_ratings.dat --numRecommendations 10
+    --threshold (0.9)

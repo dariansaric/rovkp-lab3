@@ -71,9 +71,9 @@ public class CollectionIndexer {
     private static void writeSims(Map<String, Double> sims) throws IOException {
         StringJoiner j = new StringJoiner("\n");
         sims.forEach((k, v) -> {
-            if (v > 0) {
+//            if (v > 0) {
                 j.add(k + "," + v);
-            }
+//            }
         });
         Files.write(OUTPUT_PATH,
                 j.toString().getBytes(StandardCharsets.UTF_8),
@@ -94,14 +94,11 @@ public class CollectionIndexer {
     }
 
     private static void normalizeMatrix(double[][] coMatrix) {
-        double[] maxes = new double[documentMap.size()];
-        for (int i = 0; i < maxes.length; i++) {
-            maxes[i] = Collections.max(Arrays.asList(ArrayUtils.toObject(coMatrix[i])));
-        }
-        double max = Collections.max(Arrays.asList(ArrayUtils.toObject(maxes)));
         for (int i = 0; i < documentMap.size(); i++) {
+            double max = Collections.max(Arrays.asList(ArrayUtils.toObject(coMatrix[i])));
+            double min = Collections.min(Arrays.asList(ArrayUtils.toObject(coMatrix[i])));
             for (int j = 0; j < documentMap.size(); j++) {
-                coMatrix[i][j] /= max;
+                coMatrix[i][j] = (coMatrix[i][j] - min) / (max - min);
             }
         }
     }
