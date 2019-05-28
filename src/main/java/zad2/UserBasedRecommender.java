@@ -29,14 +29,13 @@ public class UserBasedRecommender {
     private static final Path OUTPUT_PATH = Paths.get("./user-based-recommendations.dat");
 
     public static void main(String[] args) throws IOException, TasteException {
-        //todo:evaluacija daje 0.0, nezz zašto
         DataModel model = new FileDataModel(RATINGS_PATH.toFile(), "\t\t");
 
         RecommenderBuilder builder = dataModel -> {
             UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
             UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.9, similarity, model);
 
-            return new GenericUserBasedRecommender(model, neighborhood, similarity);
+            return new GenericUserBasedRecommender(dataModel, neighborhood, similarity);
         };
 
         Recommender recommender = builder.buildRecommender(model);

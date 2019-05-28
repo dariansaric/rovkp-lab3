@@ -47,12 +47,14 @@ public class Main {
         });
 
 //        populateMatrixes(lines, mat1, mat2);
+        normalizeMatrix1(mat1);
         normalizeMatrix2(mat1);
         double sum = 0;
         for (int i = 0; i < 149; i++) {
             sum += mat1[149][i];
         }
 
+        normalizeMatrix1(mat2);
         normalizeMatrix2(mat2);
 
         double[][] hybrid = calculateHybridMatrix(mat1, mat2, w1, w2);
@@ -97,6 +99,9 @@ public class Main {
         for (int i = 0; i < MAT_SIZE; i++) {
             double max = Collections.max(Arrays.asList(ArrayUtils.toObject(mat[i])));
             double min = Collections.min(Arrays.asList(ArrayUtils.toObject(mat[i])));
+            if (max == min && max == 0) {
+                continue;
+            }
             for (int j = 0; j < MAT_SIZE; j++) {
                 mat[i][j] = (mat[i][j] - min) / (max - min);
             }
@@ -106,6 +111,9 @@ public class Main {
     private static void normalizeMatrix2(double[][] mat) {
         for (int i = 0; i < MAT_SIZE; i++) {
             double sum = Arrays.stream(mat[i]).sum();
+            if (sum == 0) {
+                continue;
+            }
             for (int j = 0; j < MAT_SIZE; j++) {
                 mat[i][j] /= sum;
             }

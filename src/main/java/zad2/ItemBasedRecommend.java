@@ -30,7 +30,6 @@ public class ItemBasedRecommend {
     private static final Path OUTPUT_PATH = Paths.get("./item-based-recommendations.dat");
 
     public static void main(String[] args) throws IOException, TasteException {
-        //todo: evaluacija
         DataModel model = new FileDataModel(RATINGS_PATH.toFile(), "\t\t");
 
         ItemSimilarity similarity = new FileItemSimilarity(SIMILARITY_PATH.toFile());
@@ -61,7 +60,7 @@ public class ItemBasedRecommend {
         RecommenderBuilder builder = new RecommenderBuilder() {
             @Override
             public Recommender buildRecommender(DataModel dataModel) throws TasteException {
-                return new GenericItemBasedRecommender(model, similarity);
+                return new GenericItemBasedRecommender(dataModel, similarity);
             }
         };
 
